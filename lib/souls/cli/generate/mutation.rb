@@ -15,8 +15,6 @@ module Souls
         delete_mutation(class_name: singularized_class_name)
         destroy_delete_mutation(class_name: singularized_class_name)
       end
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     private
@@ -138,7 +136,8 @@ module Souls
             params[:relation_params].map do |n|
               ", #{n[:column_name]}: #{n[:column_name]}"
             end
-          f.write("        new_record = { **args #{relation_params.compact.join} }\n")
+
+          f.write("        new_record = { **args, id: data_id #{relation_params.compact.join} }\n")
         else
           f.write("        new_record = args.except(:id)\n")
         end

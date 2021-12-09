@@ -18,18 +18,13 @@ module Souls
             --topic-project #{project_id} \
             --push-auth-service-account #{service_account} \
             --push-endpoint #{options[:endpoint]} \
-            --expiration-period never
-            "
+            --expiration-period never"
       )
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     desc "subscription_list", "Show Google Cloud Pubsub Subscription List"
     def subscription_list
       system("gcloud pubsub subscriptions list")
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     desc "update_subscription", "Update Google Cloud Pubsub Subscription Endpoint"
@@ -43,8 +38,6 @@ module Souls
                   desc: "Google Cloud Pubsub Push Subscription Endpoint"
     def update_subscription
       system("gcloud pubsub subscriptions update #{options[:topic_name]}-sub --push-endpoint #{options[:endpoint]} ")
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
   end
 end

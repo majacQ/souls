@@ -4,9 +4,9 @@ module Souls
     method_option :mutation, aliases: "--mutation", required: true, desc: "Mutation File Name"
     def rspec_manager(class_name)
       singularized_class_name = class_name.underscore.singularize
-      file_dir = "./spec/managers/"
+      file_dir = "./spec/managers/#{singularized_class_name}_manager"
       FileUtils.mkdir_p(file_dir) unless Dir.exist?(file_dir)
-      file_path = "./spec/mutations/managers/#{singularized_class_name}/#{options[:mutation]}_spec.rb"
+      file_path = "#{file_dir}/#{options[:mutation]}_spec.rb"
       return "RspecManager already exist! #{file_path}" if File.exist?(file_path)
 
       File.open(file_path, "w") do |f|
@@ -42,8 +42,6 @@ module Souls
       end
       puts(Paint % ["Created file! : %{white_text}", :green, { white_text: [file_path.to_s, :white] }])
       file_path
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
   end
 end

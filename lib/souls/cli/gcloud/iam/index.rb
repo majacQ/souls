@@ -2,18 +2,18 @@ module Souls
   class Iam < Thor
     desc "setup_key", "Create Google Cloud IAM Service Account Key And Set All Permissions"
     def setup_key
+      region = Souls.configuration.region
       Souls::Gcloud.new.auth_login
       create_service_account
       create_service_account_key
       Souls::Gcloud.new.enable_permissions
       add_permissions
+      system("gcloud app create --region=#{region} --quiet")
       begin
         set_gh_secret_json
       rescue StandardError
         export_key_to_console
       end
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     private
@@ -71,7 +71,7 @@ module Souls
           { yellow_text: [github_secret_url, :yellow], yellow_text2: [souls_doc_url, :yellow] }
         ]
       )
-      FileUtils.rm(file_path)
+      FileUtils.rm_f(file_path)
     end
 
     def add_service_account_role(role: "roles/firebase.admin")
@@ -93,7 +93,9 @@ module Souls
         "roles/iam.serviceAccountUser",
         "roles/run.admin",
         "roles/storage.admin",
-        "roles/storage.objectAdmin"
+        "roles/storage.objectAdmin",
+        "roles/cloudscheduler.admin",
+        "roles/appengine.appCreator"
       ]
       roles.each do |role|
         add_service_account_role(role: role)

@@ -3,6 +3,7 @@ require_relative "./pubsub/index"
 require_relative "./run/index"
 require_relative "./sql/index"
 require_relative "./compute/index"
+require_relative "./scheduler/index"
 require_relative "../cli_exception"
 
 module Souls
@@ -22,23 +23,24 @@ module Souls
     desc "run [COMMAND]", "souls gcloud run Commands"
     subcommand "cloud_run", CloudRun
 
+    desc "scheduler [COMMAND]", "souls gcloud schedluer Commands"
+    subcommand "scheduler", CloudScheduler
+
     map run: "cloud_run"
 
     desc "auth_login", "gcloud config set and gcloud auth login"
     def auth_login
       project_id = Souls.configuration.project_id
       system("gcloud projects describe #{project_id}", out: File::NULL) or raise(Souls::GcloudException)
-      system("gcloud config set project #{project_id}")
+      system("gcloud config set project #{project_id} >/dev/null 2>&1")
       system("gcloud auth login")
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     desc "config_set", "gcloud config set"
     def config_set
       project_id = Souls.configuration.project_id
       system("gcloud projects describe #{project_id}", out: File::NULL) or raise(Souls::GcloudException)
-      system("gcloud config set project #{project_id}")
+      system("gcloud config set project #{project_id} >/dev/null 2>&1")
     end
 
     desc "enable_permissions", "Enable Google Cloud APIs for SOULs Framework"
@@ -52,8 +54,7 @@ module Souls
       system("gcloud services enable containerregistry.googleapis.com")
       system("gcloud services enable run.googleapis.com")
       system("gcloud services enable vpcaccess.googleapis.com")
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
+      system("gcloud services enable cloudscheduler.googleapis.com")
     end
   end
 end

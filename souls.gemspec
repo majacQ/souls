@@ -6,9 +6,9 @@ Gem::Specification.new do |gem|
   gem.authors       = ["POPPIN-FUMI", "KishiTheMechanic", "James Neve"]
   gem.email         = ["f.kawasaki@elsoul.nl", "s.kishi@elsoul.nl", "jamesoneve@gmail.com"]
 
-  gem.summary       = "Build Serverless Apps faster like Rails.
+  gem.summary       = "Ruby Serverless Framework 'SOULs'. The SOULs project was launched with the goal of reducing software development, operation and maintenance costs. Build Serverless Apps faster like Rails.
   Powered by Ruby GraphQL, RBS/Steep, Active Record, RSpec, RuboCop, and Google Cloud. "
-  gem.description = "Build Serverless Apps faster like Rails.
+  gem.description = "Ruby Serverless Framework 'SOULs'. The SOULs project was launched with the goal of reducing software development, operation and maintenance costs. Build Serverless Apps faster like Rails.
   Powered by Ruby GraphQL, RBS/Steep, Active Record, RSpec, RuboCop, and Google Cloud. "
   gem.homepage      = "https://souls.elsoul.nl"
   gem.license       = "Apache-2.0"
@@ -30,7 +30,9 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.add_runtime_dependency("activesupport", ">= 6.1.4")
   gem.add_runtime_dependency("foreman", ">= 0.87.2")
+  gem.add_runtime_dependency("firebase_id_token", ">= 2.4.0")
   gem.add_runtime_dependency("google-cloud-pubsub", ">= 2.8.0")
+  gem.add_runtime_dependency("graphql", ">= 1.12.19")
   gem.add_runtime_dependency("paint", ">= 2.2.1")
   gem.add_runtime_dependency("tty-prompt", ">= 0.23.1")
   gem.add_runtime_dependency("whirly", ">= 0.3.0")

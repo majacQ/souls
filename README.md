@@ -21,22 +21,27 @@
   <a aria-label="License" href="https://github.com/elsoul/souls/blob/master/LICENSE.txt">
     <img alt="" src="https://badgen.net/badge/license/Apache/blue">
   </a>
+    <a aria-label="Code of Conduct" href="https://github.com/elsoul/souls/blob/master/CODE_OF_CONDUCT.md">
+    <img alt="" src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg">
+  </a>
 </p>
 
 
-## SOULs Serverless Application Framework Document
+## Ruby Serverless Application Framework SOULs Document
 
 - [Go to SOULs Document](https://souls.elsoul.nl/)
 
 <p>
-  <a aria-label="SOULs Document" href="https://souls.elsoul.nl/">
+  <a aria-label="Ruby Serverless Application Framework SOULs Document" href="https://souls.elsoul.nl/">
     <img src="https://souls.elsoul.nl/imgs/gifs/souls-new-video.gif">
   </a>
 </p>
 
 ## What's SOULs?
 
-Welcome to SOULs Serverless Application Framework!
+Ruby Serverless Framework 'SOULs'. 
+
+The SOULs project was launched with the goal of reducing software development, operation and maintenance costs. 
 
 Build Serverless Apps faster like Rails.
 Powered by Ruby GraphQL, RBS/Steep, Active Record, RSpec, RuboCop, and Google Cloud. 
@@ -47,7 +52,7 @@ Powered by Ruby GraphQL, RBS/Steep, Active Record, RSpec, RuboCop, and Google Cl
 
 ![SOULs Architecture](https://souls.elsoul.nl/imgs/docs/SOULs-architecture.jpg)
 
-SOULs creates 2 types of APP.
+SOULs creates 2 types of App.
 
 1. API - GraphQL (Ruby) - Simple API - Cloud Run
 2. Worker - Google Pub/Sub Messaging Worker API (Ruby) - Cloud Run
@@ -110,13 +115,6 @@ Or install it yourself as:
 And Create Your APP
 
     $ souls new app_name
-    $ cd apps/api/app_name
-    $ souls s
-
-Check your GraphQL PlayGround
-
-[localhost:4000/playground](localhost:4000/playground)
-
 
 
 ## Development
@@ -145,4 +143,4 @@ The gem is available as open source under the terms of the [Apache-2.0 License](
 
 ## Code of Conduct
 
-Everyone interacting in the HotelPrice project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/elsoul/souls/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Souls project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/elsoul/souls/blob/master/CODE_OF_CONDUCT.md).

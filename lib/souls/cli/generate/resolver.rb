@@ -13,8 +13,6 @@ module Souls
       resolver_end(class_name: singularized_class_name)
       puts(Paint % ["Created file! : %{white_text}", :green, { white_text: [file_path.to_s, :white] }])
       file_path
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     private
@@ -26,13 +24,13 @@ module Souls
       File.open(file_path, "w") do |f|
         f.write(<<~TEXT)
           module Resolvers
-            class #{class_name.camelize}Search < Base
+            class #{class_name.camelize}Search < BaseResolver
               include SearchObject.module(:graphql)
               scope { ::#{class_name.camelize}.all }
               type Types::#{class_name.camelize}Type.connection_type, null: false
               description "Search #{class_name.camelize}"
 
-              class #{class_name.camelize}Filter < ::Types::BaseInputObject
+              class #{class_name.camelize}Filter < Souls::Types::BaseInputObject
                 argument :OR, [self], required: false
         TEXT
       end
@@ -80,8 +78,6 @@ module Souls
       end
 
       option :filter, type: #{class_name.camelize}Filter, with: :apply_filter
-      option :first, type: types.Int, with: :apply_first
-      option :skip, type: types.Int, with: :apply_skip
 
       def apply_filter(scope, value)
         branches = normalize_filters(value).inject { |a, b| a.or(b) }
@@ -144,7 +140,7 @@ module Souls
         f.write(<<~TEXT)
                 scope = scope.where("created_at >= ?", value[:start_date]) if value[:start_date]
                 scope = scope.where("created_at <= ?", value[:end_date]) if value[:end_date]
-                branches << scope
+                branches << scope.order(created_at: :desc)
                 value[:OR].inject(branches) { |s, v| normalize_filters(v, s) } if value[:OR].present?
                 branches
               end

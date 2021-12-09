@@ -24,6 +24,7 @@ module Souls
         file_path = ".env"
         File.open(file_path, "w") do |line|
           line.write(<<~TEXT)
+            GOOGLE_AUTH_SUPPRESS_CREDENTIALS_WARNINGS=1
             SOULS_DB_HOST=#{instance_ip}
             SOULS_DB_PW=#{password}
             SOULS_DB_USER=postgres
@@ -50,15 +51,11 @@ module Souls
         end
       end
       Souls::Github.new
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     desc "list", "Show Cloud SQL Instances List"
     def list
       system("gcloud sql instances list")
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     desc "setup_private_ip", "Enable Private IP"
@@ -66,8 +63,6 @@ module Souls
       create_ip_range
       create_vpc_connector
       assign_network
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     desc "assign_network", "Assign Network"
@@ -76,8 +71,6 @@ module Souls
       instance_name = Souls.configuration.instance_name
       project_id = Souls.configuration.project_id
       system("gcloud beta sql instances patch #{instance_name} --project=#{project_id} --network=#{app_name}")
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     desc "create_ip_range", "Create VPC Adress Range"
@@ -94,8 +87,6 @@ module Souls
               --network=#{app_name} \
               --project=#{project_id}"
       )
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     desc "create_vpc_connector", "Create VPC-PEERING Connect"
@@ -104,32 +95,50 @@ module Souls
       project_id = Souls.configuration.project_id
       system(
         "
-            gcloud services vpc-peerings connect \
-              --service=servicenetworking.googleapis.com \
-              --ranges=#{app_name}-ip-range \
-              --network=#{app_name} \
-              --project=#{project_id}
-            "
+          gcloud services vpc-peerings connect \
+            --service=servicenetworking.googleapis.com \
+            --ranges=#{app_name}-ip-range \
+            --network=#{app_name} \
+            --project=#{project_id}
+      "
       )
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     desc "assgin_ip", "Add Current Grobal IP to White List"
-    def assign_ip(instance_name: "", ip: "")
-      ip = `curl inet-ip.info` if ip.blank?
-      project_id = Souls.configuration.project_id if instance_name.blank?
-      instance_name = Souls.configuration.instance_name if instance_name.blank?
+    method_option :ip, default: "", aliases: "--ip", desc: "Adding IP to Google Cloud SQL White List: e.g.'11.11.1.1'"
+    def assign_ip
+      project_id = Souls.configuration.project_id
+      instance_name = Souls.configuration.instance_name
+      ips = []
+      ip =
+        if options[:ip].blank?
+          `curl inet-ip.info`.strip
+        else
+          options[:ip].strip
+        end
+      ips << ip
+      cloud_sql = JSON.parse(
+        `curl -X GET \
+        -H "Authorization: Bearer "$(gcloud auth print-access-token) \
+        "https://sqladmin.googleapis.com/v1/projects/#{project_id}/instances/#{instance_name}?fields=settings"`
+      )
+      unless cloud_sql["settings"]["ipConfiguration"]["authorizedNetworks"].blank?
+        white_ips =
+          cloud_sql["settings"]["ipConfiguration"]["authorizedNetworks"].map do |sql_ips|
+            sql_ips["value"]
+          end
+        ips = (ips + white_ips).uniq
+      end
+      ips = ips.join(",")
       system(
         "
             gcloud sql instances patch #{instance_name} \
               --project=#{project_id} \
               --assign-ip \
-              --authorized-networks=#{ip}
+              --authorized-networks=#{ips} \
+              --quiet
             "
       )
-    rescue Thor::Error => e
-      raise(Thor::Error, e)
     end
 
     private
