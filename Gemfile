@@ -3,7 +3,7 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in souls.gemspec
 gemspec
 
-gem "activesupport", "6.1.4.1"
+gem "activesupport", "6.1.7.1"
 gem "foreman", "0.87.2"
 gem "google-cloud-pubsub", "2.8.1"
 gem "paint", "2.2.1"
